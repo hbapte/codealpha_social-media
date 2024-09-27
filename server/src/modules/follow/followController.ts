@@ -1,8 +1,8 @@
-// src/modules/follow/followController.ts
 import { Request, Response } from 'express';
 import followRepository from './followRepository';
 import notificationRepository from '../notification/notificationRepository'; // Import the notification repository
 import httpStatus from 'http-status';
+import { getSocketInstance } from '../../services/socket';
 
 interface User {
     id: string;
@@ -25,7 +25,11 @@ const createFollow = async (req: Request, res: Response) => {
         const newFollow = await followRepository.createFollow(followerId, followingId);
         
         // Notify the user being followed
-        await notificationRepository.notifyUser('follow', followingId, followerId, `/users/${followerId}`);
+       const notification = await notificationRepository.notifyUser('follow', followingId, followerId, `/users/${followerId}`);
+
+        // Emit real-time notification to the user being followed
+        const io = getSocketInstance();
+        io.to(followingId).emit('receiveNotification', notification);       
         
         res.status(httpStatus.CREATED).json({ follow: newFollow });
     } catch (error) {

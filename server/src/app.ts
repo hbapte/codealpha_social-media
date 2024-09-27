@@ -5,6 +5,8 @@ import cors from "cors";
 import indexRouter from "./routes/index";
 const cookieParser = require('cookie-parser');
 import loggerMiddleware from "./middlewares/logger";
+import http from 'http';
+import { initializeSocket } from './services/socket';
 
 
 dotenv.config(); 
@@ -13,6 +15,8 @@ const app: Express = express();
 app.use(express.json());
 app.use(cors());
 app.use(loggerMiddleware);
+const server = http.createServer(app);
+const io = initializeSocket(server);
 
 app.use(express.json());
 app.use(cookieParser());

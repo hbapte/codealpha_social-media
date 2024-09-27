@@ -4,6 +4,7 @@ import likeRepository from './likeRepository';
 import notificationRepository from '../notification/notificationRepository'; 
 import postRepository from '../post/postRepository';
 import httpStatus from 'http-status';
+import { getSocketInstance } from '../../services/socket';
 
 
 interface User {
@@ -30,7 +31,13 @@ const createLike = async (req: Request, res: Response) => {
         const postAuthorId = await postRepository.getPostAuthorId(postId);
 
         if (postAuthorId) {
-            await notificationRepository.notifyUser('like', postAuthorId.toString(), userId, `/posts/${postId}`);
+          const notification =  await notificationRepository.notifyUser('like', postAuthorId.toString(), userId, `/posts/${postId}`);
+
+            // Notify the post author
+            
+
+          const io = getSocketInstance();
+            io.to(postAuthorId.toString()).emit('notification', notification);
         }
         
         // Notify the post author

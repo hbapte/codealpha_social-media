@@ -4,6 +4,7 @@ import commentRepository from './commentRepository';
 import notificationRepository from '../notification/notificationRepository'; // Import the notification repository
 import httpStatus from 'http-status';
 import postRepository from '../post/postRepository';
+import { getSocketInstance } from '../../services/socket';
 
 interface User {
     id: string;
@@ -23,12 +24,13 @@ const createComment = async (req: Request, res: Response) => {
         
         const postAuthorId = await postRepository.getPostAuthorId(postId);
         
-        // Notify the post author only if postAuthorId is defined
         if (postAuthorId) {
-            await notificationRepository.notifyUser('comment', postAuthorId.toString(), userId, `/posts/${postId}`);
+            const notification = await notificationRepository.notifyUser('comment', postAuthorId.toString(), userId, `/posts/${postId}`);
+
+            // Emit real-time notification to the post author
+            const io = getSocketInstance();
+            io.to(postAuthorId.toString()).emit('receiveNotification', notification);
         }
-        
-        res.status(httpStatus.CREATED).json({ comment: newComment });
         
         res.status(httpStatus.CREATED).json({ comment: newComment });
     } catch (error) {
