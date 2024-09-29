@@ -1,8 +1,10 @@
+// server\src\modules\follow\followController.ts
 import { Request, Response } from 'express';
 import followRepository from './followRepository';
 import notificationRepository from '../notification/notificationRepository'; // Import the notification repository
 import httpStatus from 'http-status';
 import { getSocketInstance } from '../../services/socket';
+import userRepository from '../user/userRepository';
 
 interface User {
     id: string;
@@ -23,6 +25,9 @@ const createFollow = async (req: Request, res: Response) => {
         }
 
         const newFollow = await followRepository.createFollow(followerId, followingId);
+
+        await userRepository.addFollower(followingId, followerId); // Update followers of the followed user
+        await userRepository.addFollowing(followerId, followingId); // Update following of the follower user
         
         // Notify the user being followed
        const notification = await notificationRepository.notifyUser('follow', followingId, followerId, `/users/${followerId}`);
@@ -66,6 +71,10 @@ const deleteFollow = async (req: Request, res: Response) => {
 
     try {
         await followRepository.deleteFollow(followerId, followingId);
+
+        await userRepository.removeFollower(followingId, followerId);
+        await userRepository.removeFollowing(followerId, followingId);
+        
         res.status(httpStatus.NO_CONTENT).send();
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });

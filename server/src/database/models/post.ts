@@ -1,3 +1,4 @@
+// server\src\database\models\post.ts
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IPost extends Document {

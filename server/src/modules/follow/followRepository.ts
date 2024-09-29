@@ -1,3 +1,4 @@
+// server\src\modules\follow\followRepository.ts
 import { Follow } from '../../database/models/follow';
 
 const createFollow = async (followerId: string, followingId: string) => {

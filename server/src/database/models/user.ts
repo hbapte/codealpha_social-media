@@ -11,6 +11,7 @@ export interface IUser extends Document {
   avatar?: string;
   followers: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
+  posts: mongoose.Types.ObjectId[];
   emailVerified: boolean;
   emailVerificationToken: string;
   emailVerificationTokenCreated: Date;
@@ -25,6 +26,7 @@ const userSchema: Schema = new Schema({
   username: { type: String, required: true, unique: true },
   followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   bio: { type: String, default: '' },
   avatar: { type: String, default: '' },
   role: { type: String, default: 'user' },

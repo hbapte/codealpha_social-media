@@ -7,6 +7,7 @@ import likeRouter from './likeRoutes';
 import followRouter from './followRoutes';
 import notificationRouter from './notificationRoutes';
 import profileRouter from './profileRoutes';
+import usersRouter from './usersRoute';
 
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.use('/like', likeRouter);
 router.use('/follow', followRouter);
 router.use('/notification', notificationRouter);
 router.use('/user', profileRouter);
+router.use('/', usersRouter);
 
 
 export default router;

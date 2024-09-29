@@ -42,6 +42,8 @@ const editProfile = async (req: Request, res: Response) => {
     }
 };
 
+
+
 export default {
     viewProfile,
     editProfile,

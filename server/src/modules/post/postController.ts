@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import postRepository from './postRepository';
 import httpStatus from 'http-status';
+import userRepository from '../user/userRepository';
 
 interface User {
     id: string;
@@ -16,7 +17,8 @@ const createPost = async (req: Request, res: Response) => {
     const user = req.user as User;
     const userId = user?.id; 
        try {
-        const newPost = await postRepository.createPost({ userId, content, image });
+        const newPost = await postRepository.createPost({ userId, content, image });        
+        await userRepository.addPost(userId, newPost._id);
         res.status(httpStatus.CREATED).json({ post: newPost });
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });
@@ -64,8 +66,13 @@ const updatePost = async (req: Request, res: Response) => {
 const deletePost = async (req: Request, res: Response) => {
     const { postId } = req.params;
 
+    const user = req.user as User;
+    const userId = user?.id; 
+
     try {
         await postRepository.deletePost(postId);
+
+        // await userRepository.removePost(userId, postId._id);
         res.status(httpStatus.NO_CONTENT).json({message: 'Post deleted successfully'});
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });

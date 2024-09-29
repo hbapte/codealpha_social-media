@@ -6,7 +6,7 @@ const createPost = async (postData: any) => {
 };
 
 const getPosts = async () => {
-    return await Post.find().populate('userId', 'names username');
+    return await Post.find().sort({ createdAt: -1 }).populate('userId', 'names username');
 };
 
 const getPostById = async (postId: string) => {
