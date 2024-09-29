@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Social Media App</title>
+    <link rel="stylesheet" href="./css/users.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Social Media App</h1>
+            <nav>
+                <a href="index.html" class="nav-link">My Profile</a>
+                <a href="feeds.html" class="nav-link">Feeds</a>
+                <a href="users.html" class="nav-link active">Users</a>
+                <a href="notifications.html" class="nav-link">Notifications</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </nav>
+        </header>
+        <main class="users-container">
+            <h2>Discover Users</h2>
+            <div class="search-bar">
+                <input type="text" id="user-search" placeholder="Search users...">
+                <button id="search-btn">
+                    <i data-lucide="search"></i>
+                </button>
+            </div>
+            <div id="users-grid" class="users-grid">
+                <!-- Users will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+    <script src="./js/users.js"></script>
+</body>
+</html>

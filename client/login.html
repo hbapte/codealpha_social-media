@@ -1,0 +1,50 @@
+<!-- client\login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Social Media App</title>
+    <link rel="stylesheet" href="./css/login.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+       
+      
+      <main class="login-container">
+        <h2>Log In</h2>
+       
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <small id="email-Error" class="error-message"></small> <!-- Error for email -->
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-input">
+              <input type="password" id="password" name="password" required>
+              <button type="button" class="toggle-password">
+                <i data-lucide="eye"></i> <!-- Show/Hide Icon -->
+              </button>
+            </div>
+            <small id="password-Error" class="error-message"></small> <!-- Error for password -->
+          </div>
+         
+          <button type="submit" class="login-btn">Log In</button>
+        </form>
+        <div class="form-links">
+          <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
+          <p class="signup-link">Don't have an account? <a href="signup.html">Sign up</a></p>
+        </div>
+
+        <div id="message"></div> <!-- Message container -->
+      </main>
+      
+
+
+    </div>
+    <script src="./js/login.js"></script>
+</body>
+</html>

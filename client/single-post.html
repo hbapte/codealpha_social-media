@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Post View</title>
+    <link rel="stylesheet" href="./css/single-post.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Social Media App</h1>
+            <nav>
+                <a href="index.html" class="nav-link">Feeds</a>
+                <a href="notifications.html" class="nav-link">Notifications</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </nav>
+        </header>
+        <main class="single-post-container">
+            <article id="post" class="post">
+                <!-- Post content will be dynamically inserted here -->
+            </article>
+            <section class="comments-section">
+                <h2>Comments</h2>
+                <form id="comment-form" class="comment-form">
+                    <textarea id="comment-content" placeholder="Write a comment..." required></textarea>
+                    <button type="submit" class="comment-btn">Post Comment</button>
+                </form>
+                <div id="comments-list" class="comments-list">
+                    <!-- Comments will be dynamically inserted here -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="./js/single-post.js"></script>
+</body>
+</html>

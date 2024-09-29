@@ -1,0 +1,40 @@
+<!-- client\index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Feeds</title>
+    <link rel="stylesheet" href="/client/css/feeds.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Social Media Feeds</h1>
+            <nav>
+                <a href="#" class="nav-link active">Feeds</a>
+                <a href="notifications.html" class="nav-link">Notifications</a>               
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+               
+                
+                
+            </nav>
+        </header>
+        <main class="feeds-container">
+            <section class="create-post">
+                <img src="./assets/placeholder.svg" alt="Your Avatar" class="user-avatar">
+                <form id="create-post-form">
+                    <textarea id="post-content" placeholder="What's on your mind?" required></textarea>
+                    <button type="submit" class="post-btn">Post</button>
+                </form>
+            </section>
+            <section id="feeds" class="feeds">
+                <!-- Posts will be dynamically inserted here -->
+            </section>
+        </main>
+    </div>
+    <script src="./js/feeds.js"></script>
+</body>
+</html>
