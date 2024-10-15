@@ -5,7 +5,7 @@ import notificationRepository from '../notification/notificationRepository';
 import postRepository from '../post/postRepository';
 import httpStatus from 'http-status';
 import { getSocketInstance } from '../../services/socket';
-
+import userRepository from '../user/userRepository';
 
 interface User {
     id: string;
@@ -19,35 +19,43 @@ const createLike = async (req: Request, res: Response) => {
     const userId = user?.id;
 
     try {
-        // Check if user has already liked the post
         const existingLike = await likeRepository.userHasLikedPost(postId, userId);
         if (existingLike) {
             return res.status(httpStatus.BAD_REQUEST).json({ message: 'You have already liked this post.' });
         }
 
         const newLike = await likeRepository.createLike(postId, userId);
-        
-        // Get the post's author ID
+    
         const postAuthorId = await postRepository.getPostAuthorId(postId);
+        
+        await postRepository.addLike(postId, userId);
 
         if (postAuthorId) {
-          const notification =  await notificationRepository.notifyUser('like', postAuthorId.toString(), userId, `/posts/${postId}`);
+            const userDetails = await userRepository.getUserById(userId);
+            const username = userDetails?.username;
 
-            // Notify the post author
-            
+            if (!username) {
+                return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'User details not found' });
+            }
 
-          const io = getSocketInstance();
+            const notification = await notificationRepository.notifyUser(
+                'like',
+                postAuthorId.toString(),
+                username, 
+                `/posts/${postId}`,
+                `User ${username} liked your post.` 
+            );
+
+            const io = getSocketInstance();
             io.to(postAuthorId.toString()).emit('notification', notification);
         }
-        
-        // Notify the post author
-        
-          
+
         res.status(httpStatus.CREATED).json({ like: newLike });
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });
     }
 };
+
 
 const getLikes = async (req: Request, res: Response) => {
     const postId = req.params.postId;
@@ -61,10 +69,17 @@ const getLikes = async (req: Request, res: Response) => {
 };
 
 const deleteLike = async (req: Request, res: Response) => {
-    const likeId = req.params.likeId; // Assuming likeId is passed as a route parameter
+    const likeId = req.params.likeId; 
 
     try {
+        const like = await likeRepository.getLikeById(likeId);
+        if (!like) {
+            return res.status(httpStatus.NOT_FOUND).json({ message: 'Like not found' });
+        }
+
         await likeRepository.deleteLike(likeId);
+
+        await postRepository.removeLike(like.postId.toString(), like.userId.toString());
         res.status(httpStatus.NO_CONTENT).send();
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });

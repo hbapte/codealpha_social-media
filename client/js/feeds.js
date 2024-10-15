@@ -1,16 +1,25 @@
 // client\js\feeds.js
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    const token = getCookie('token'); 
+    if (!token) {
+      window.location.href = './login.html';
+      return; 
+    }
+
+
     const createPostForm = document.getElementById('create-post-form');
     const feedsContainer = document.getElementById('feeds');
     const API_URL = 'http://localhost:8080/api/post';
 
-    // Simulated user data for rendering posts
-    const currentUser = {
-        id: 1,
-        name: 'John Doe',
-        username: 'johndoe123',
-        avatar: './assets/placeholder.svg?height=40&width=40'
-    };
 
     // Fetch posts from the API
     async function fetchPosts() {
@@ -19,40 +28,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`, // Replace with your actual bearer token
+                    Authorization: `Bearer ${token}`,
                 }
             });
 
             const data = await response.json();
-            return data.posts; // Assumes the API returns an array of posts under "posts"
+            return data.posts;
         } catch (error) {
             console.error('Error fetching posts:', error);
             return [];
         }
     }
 
-    // Handle post creation
     createPostForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const content = document.getElementById('post-content').value.trim();
         
         if (content) {
             try {
-                // Send the post to the API
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Replace with your actual bearer token
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({ content })
                 });
 
                 if (response.ok) {
-                    const newPost = await response.json(); // Get the newly created post data from response
-                    posts.unshift(newPost); // Add the new post to the beginning of the posts array
-                    renderPosts(posts); // Re-render posts
-                    createPostForm.reset(); // Reset the form after successful submission
+                    const newPost = await response.json(); 
+                    posts.unshift(newPost); 
+                    renderPosts(posts);
+                    createPostForm.reset(); 
                 } else {
                     console.error('Error creating post:', response.statusText);
                 }
@@ -61,10 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    // Render posts
     function renderPosts(posts) {
-        feedsContainer.innerHTML = ''; // Clear previous posts
+        feedsContainer.innerHTML = ''; 
         posts.forEach(post => {
             const postElement = createPostElement(post);
             feedsContainer.appendChild(postElement);

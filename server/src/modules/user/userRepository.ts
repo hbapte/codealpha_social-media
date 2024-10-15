@@ -1,8 +1,19 @@
 import { User } from '../../database/models/user';
 
 const getUserById = async (userId: string) => {
-    return await User.findById(userId).select('-password'); // Exclude password from the result
+    return await User.findById(userId).select('-password -verificationToken -resetToken -role -emailVerificationTokenCreated -emailVerified -__v')
+    .populate('followers', 'names username')
+    .populate('following', 'names username')
+    .populate('posts', 'content createdAt');; 
+
 };
+
+const getUserByUsername = async (username: string) => {
+    return await User.findOne({ username    }).select('-password -verificationToken -resetToken -role -emailVerificationTokenCreated -emailVerified -__v')
+    .populate('followers', 'names username')
+    .populate('following', 'names username')
+    .populate('posts', 'content createdAt');
+}
 
 
 const getAllUsers = async () => {
@@ -78,4 +89,5 @@ export default {
     removeFollowing,
     addPost,
     removePost,
+    getUserByUsername
 };

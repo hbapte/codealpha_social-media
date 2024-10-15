@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications</title>
@@ -15,18 +16,21 @@
             <nav>          
            
                 <a href="index.html" class="nav-link">Feeds</a>
+                <a href="users.html" class="nav-link">Users</a>
                 <a href="notifications.html" class="nav-link active">Notifications</a>
-                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="profile.html" class="nav-link">My Profile</a>
                 <a href="settings.html" class="nav-link">Settings</a>
             </nav>
         </header>
         <main class="notifications-container">
             <h2>Notifications</h2>
+            <button id="mark-all-read" class="mark-all-read">Mark All as Read</button>
             <div id="notifications-list" class="notifications-list">
-                <!-- Notifications will be dynamically inserted here -->
             </div>
         </main>
+        
     </div>
+
     <script src="./js/notifications.js"></script>
 </body>
 </html>

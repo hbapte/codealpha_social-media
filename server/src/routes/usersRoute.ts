@@ -5,6 +5,7 @@ import userControllers from '../modules/users/userControllers';
 
 const usersRouter = Router();
 
-usersRouter.get('/users', sessionMiddleware, userControllers.getAllUser); 
+usersRouter.get('/users', sessionMiddleware, userControllers.getAllUser);
+usersRouter.get('/users/:username', sessionMiddleware, userControllers.getUserByUsername); 
 
 export default usersRouter;

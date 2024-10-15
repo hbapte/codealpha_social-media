@@ -5,6 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const messageDiv = document.getElementById("message");
   const togglePasswordButton = document.querySelector(".toggle-password");
 
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); 
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value}; ${expires}; path=/`;
+  }
+
   // Toggle password visibility
   togglePasswordButton.addEventListener("click", () => {
     togglePasswordVisibility(passwordInput, togglePasswordButton);
@@ -42,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (response.ok) {
         showMessage("Login successful!", "success");
-        localStorage.setItem("token", data.token);
+        setCookie("token", data.token, 2);      
         window.location.href = "./index.html";
       } else {
         showMessage(data.message || "Login failed", "error");
@@ -85,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
 

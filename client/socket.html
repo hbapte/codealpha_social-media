@@ -1,0 +1,33 @@
+<!-- client/socket-test.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket Test</title>
+    <link rel="stylesheet" href="./css/socket-test.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Socket Test</h1>
+            <nav>
+                <a href="index.html" class="nav-link">Feeds</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="notifications.html" class="nav-link">Notifications</a>
+                <a href="profile.html" class="nav-link">My Profile</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+                <a href="socket-test.html" class="nav-link active">Socket Test</a>
+            </nav>
+        </header>
+        <main class="socket-test-container">
+            <h2>Socket Testing</h2>
+            <button id="join-button">Join Socket</button>
+            <div id="notifications-list" class="notifications-list"></div>
+        </main>
+    </div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+    <script src="./js/socket-test.js"></script>
+</body>
+</html>

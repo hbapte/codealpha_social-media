@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import notificationRepository from './notificationRepository';
 import httpStatus from 'http-status';
+import { getSocketInstance } from '../../services/socket';
 
 interface User {
     id: string;
@@ -13,7 +14,13 @@ const createNotification = async (req: Request, res: Response) => {
     const userId = req.params.userId;
 
     try {
+        // Create the notification
         const newNotification = await notificationRepository.createNotification(userId, type, content, link);
+
+        // Emit the notification via sockets
+        const io = getSocketInstance();
+        io.to(userId).emit('receiveNotification', newNotification); // Send notification to the targeted user
+
         res.status(httpStatus.CREATED).json({ notification: newNotification });
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });

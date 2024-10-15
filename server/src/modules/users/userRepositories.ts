@@ -8,8 +8,16 @@ const getAllUsers = async () => {
       .populate('following', 'names username')
       .populate('posts', 'content createdAt');
   };
+
+  const getUserByUsername = async (username: string) => {
+    return await User.findOne({ username    }).select('-password -verificationToken -resetToken -role -emailVerificationTokenCreated -emailVerified -__v')
+    .populate('followers', 'names username')
+    .populate('following', 'names username')
+    .populate('posts', 'content createdAt');
+}
   
 
 export default {
-    getAllUsers
+    getAllUsers,
+    getUserByUsername,
 };

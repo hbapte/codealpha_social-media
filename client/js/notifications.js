@@ -1,13 +1,59 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const notificationsList = document.getElementById('notifications-list');
+// client\js\notifications.js
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
 
-    // Fetch notifications from the API
+  // Function to get the cookie value (if needed for authentication)
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+// Function to decode JWT and extract userId
+function getUserIdFromToken(token) {
+    if (!token) return null;
+
+    const payloadBase64 = token.split('.')[1]
+    const payloadJson = atob(payloadBase64); 
+    const payload = JSON.parse(payloadJson); 
+
+    return payload.userId; 
+}
+
+// Socket initialization
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = getCookie('token'); 
+    if (!token) {
+      window.location.href = './login.html';
+      return; 
+    }
+
+    const socket = io('http://localhost:8080');
+    
+    const userId = getUserIdFromToken(token); 
+    if (!userId) {
+        alert('Invalid token. Unable to get user ID.');
+        return;
+    }
+
+    
+
+    socket.emit('join', userId); 
+
+    const notificationsList = document.getElementById('notifications-list');
     async function fetchNotifications() {
         try {
             const response = await fetch('http://localhost:8080/api/notification', {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`, 
+                    Authorization: `Bearer ${token}`, 
                     'Content-Type': 'application/json'
                 }
             });

@@ -1,3 +1,4 @@
+// client\js\register.js
 document.addEventListener("DOMContentLoaded", function () {
     const signupForm = document.getElementById("signup-form");
     const namesInput = document.getElementById("names");
@@ -52,17 +53,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
   
         const data = await response.json();
-  
+
         if (response.ok) {
-          showMessage("Registration successful! You can now log in.", "success");
-          window.location.href = "./login.html"; // Redirect to login page
+            showMessage("Registration successful! You can now log in.", "success");
+            setTimeout(() => {
+                window.location.href = "./login.html"; 
+            }, 3500);
         } else {
-          showMessage(data.message || "Registration failed", "error");
+            showMessage(data.message || "Registration failed", "error");
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error:", error);
         showMessage("An error occurred. Please try again.", "error");
-      }
+    }
     });
   
     // Utility functions
@@ -103,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     function validateEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return emailRegex.test(email);
     }
   

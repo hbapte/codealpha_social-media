@@ -19,6 +19,21 @@ const getAllUser = async (req: Request, res: Response) => {
     }
 }
 
+const getUserByUsername = async (req: Request, res: Response) => {
+    const { username } = req.params;
+
+    try {
+        const user = await userRepository.getUserByUsername(username);
+        if (!user) {
+            return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
+        }
+        res.status(httpStatus.OK).json({ user });
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });
+    }
+}
+
 export default {
     getAllUser,
+    getUserByUsername,
 };

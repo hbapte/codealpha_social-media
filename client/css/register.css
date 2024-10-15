@@ -8,9 +8,9 @@ body {
 }
 
 .container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 1rem;
+    max-width: 600px;
+    margin: auto;
+    padding: 3rem 0;
 }
 
 .app-header {
@@ -31,7 +31,7 @@ body {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
+    padding: 17rem;
 }
 
 .signup-container h2 {
@@ -57,7 +57,7 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-    width: 100%;
+    width: 96%;
     padding: 0.5rem;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
@@ -166,7 +166,7 @@ input[type="password"] {
 .message {
     text-align: center;
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem 0;
 }
 
 .message.success {
@@ -176,3 +176,43 @@ input[type="password"] {
 .message.error {
     color: red;
 }
+
+
+/* Toast message styles */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    animation: slideIn 0.5s forwards;
+}
+
+/* Success toast */
+.toast.success {
+    background-color: #4caf50;
+}
+
+/* Error toast */
+.toast.error {
+    background-color: #f44336;
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+    0% {
+        top: 0;
+        opacity: 0;
+    }
+    100% {
+        top: 20px;
+        opacity: 1;
+    }
+}
+

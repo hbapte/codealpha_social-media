@@ -1,5 +1,6 @@
 // src/modules/comment/commentRepository.ts
 import { Comment } from '../../database/models/comment';
+import { Post } from '../../database/models/post';
 
 const createComment = async (postId: string, userId: string, content: string) => {
     const comment = new Comment({ postId, userId, content });
@@ -24,10 +25,32 @@ const deleteComment = async (commentId: string) => {
     return await Comment.findByIdAndDelete(commentId);
 };
 
+const addComment = async (postId: string, commentId: string) => {
+    return await Post.findByIdAndUpdate
+    (
+        postId,
+        { $addToSet: { comments: commentId } },
+        { new: true }
+    );
+}
+
+const removeComment = async (postId: string, commentId: string) => {
+    return await Post.findByIdAndUpdate
+    (
+        postId,
+        { $pull: { comments: commentId } },
+        { new: true }
+    );
+}
+
+
+
 export default {
     createComment,
     getCommentsByPostId,
     getCommentById,
     updateComment,
     deleteComment,
+    addComment,
+    removeComment,
 };

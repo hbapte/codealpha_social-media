@@ -5,6 +5,7 @@ import notificationRepository from '../notification/notificationRepository'; // 
 import httpStatus from 'http-status';
 import postRepository from '../post/postRepository';
 import { getSocketInstance } from '../../services/socket';
+import userRepository from '../user/userRepository';
 
 interface User {
     id: string;
@@ -23,11 +24,26 @@ const createComment = async (req: Request, res: Response) => {
         const newComment = await commentRepository.createComment(postId, userId, content);
         
         const postAuthorId = await postRepository.getPostAuthorId(postId);
+
+        await postRepository.addComment(postId, newComment._id);
         
         if (postAuthorId) {
-            const notification = await notificationRepository.notifyUser('comment', postAuthorId.toString(), userId, `/posts/${postId}`);
+            // Fetch the username of the user who commented
+            const userDetails = await userRepository.getUserById(userId);
+            const username = userDetails?.username;
 
-            // Emit real-time notification to the post author
+            if (!username) {
+                return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'User details not found' });
+            }
+
+            const notification = await notificationRepository.notifyUser(
+                'comment',
+                postAuthorId.toString(),
+                username, 
+                `/posts/${postId}`,
+                `User ${username} commented on your post.` // Custom content
+            );
+
             const io = getSocketInstance();
             io.to(postAuthorId.toString()).emit('receiveNotification', notification);
         }
@@ -37,6 +53,7 @@ const createComment = async (req: Request, res: Response) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });
     }
 };
+
 
 const getComments = async (req: Request, res: Response) => {
     const postId = req.params.postId;
@@ -69,6 +86,8 @@ const deleteComment = async (req: Request, res: Response) => {
 
     try {
         await commentRepository.deleteComment(commentId);
+
+        
         res.status(httpStatus.NO_CONTENT).send();
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error });

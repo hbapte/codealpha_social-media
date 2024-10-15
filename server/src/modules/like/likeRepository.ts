@@ -1,4 +1,5 @@
 import { Like } from '../../database/models/like';
+import { Post } from '../../database/models/post';
 
 const createLike = async (postId: string, userId: string) => {
     const like = new Like({ postId, userId });
@@ -18,6 +19,25 @@ const deleteLike = async (likeId: string) => {
 };
 
 
+const addLike = async (postId: string, likeId: string) => {
+    return await Post.findByIdAndUpdate
+    (
+        postId,
+        { $addToSet: { likes: likeId } },
+        { new: true }
+    );
+};
+
+const removeLike = async (postId: string, likeId: string) => {
+    return await Post.findByIdAndUpdate
+    (
+        postId,
+        { $pull: { likes: likeId } },
+        { new: true }
+    );
+};
+
+
 
 // Check if a user has liked a post
 const userHasLikedPost = async (postId: string, userId: string) => {
@@ -30,4 +50,6 @@ export default {
     getLikeById,
     deleteLike,
     userHasLikedPost,
+    addLike,
+    removeLike,
 };

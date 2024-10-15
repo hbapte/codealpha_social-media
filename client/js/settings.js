@@ -1,4 +1,17 @@
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
 document.addEventListener('DOMContentLoaded', () => {
+    const token = getCookie('token'); 
+    if (!token) {
+      window.location.href = './login.html';
+      return; 
+    }
+
     const settingsForm = document.getElementById('settings-form');
     const deactivateBtn = document.getElementById('deactivate-btn');
     const deleteBtn = document.getElementById('delete-btn');

@@ -1,4 +1,18 @@
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+
 document.addEventListener('DOMContentLoaded', () => {
+    const token = getCookie('token'); 
+    if (!token) {
+      window.location.href = './login.html';
+      return; 
+    }
+
     const userAvatar = document.getElementById('user-avatar');
     const userName = document.getElementById('user-name');
     const userUsername = document.getElementById('user-username');
@@ -9,61 +23,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const followBtn = document.getElementById('follow-btn');
     const postsContainer = document.getElementById('posts-container');
 
-    // Simulated user data
-    const userData = {
-        id: 2,
-        name: 'Jane Smith',
-        username: 'janesmith',
-        avatar: './assets/placeholder.svg',
-        bio: 'Passionate photographer and travel enthusiast. Capturing moments and exploring the world one click at a time. 📸✈️',
-        postsCount: 42,
-        followersCount: 1234,
-        followingCount: 567,
-        isFollowing: false
-    };
+    // Get username from URL
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('username');
 
-    // Simulated user posts
-    const userPosts = [
-        {
-            id: 1,
-            content: 'Just captured this amazing sunset! 🌅 #photography #nature',
-            likes: 89,
-            comments: 12,
-            timestamp: new Date(Date.now() - 3600000).toISOString()
-        },
-        {
-            id: 2,
-            content: 'Exploring the streets of Tokyo. So much inspiration everywhere! 🗼🏙️ #travel #japan',
-            likes: 134,
-            comments: 23,
-            timestamp: new Date(Date.now() - 86400000).toISOString()
-        },
-        {
-            id: 3,
-            content: 'New camera day! Can\'t wait to test it out this weekend. 📷 #photography #gear',
-            likes: 56,
-            comments: 8,
-            timestamp: new Date(Date.now() - 172800000).toISOString()
+    // Fetch user data from API
+    async function fetchUserData() {
+        try {
+            const response = await fetch(`http://localhost:8080/api/users/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                renderUserProfile(data.user);
+                renderUserPosts(data.user.posts); // Assuming the posts are also in the user object
+            } else {
+                console.error('Failed to fetch user data:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
         }
-    ];
+    }
 
     // Render user profile
-    function renderUserProfile() {
-        userAvatar.src = userData.avatar;
-        userAvatar.alt = `${userData.name}'s avatar`;
-        userName.textContent = userData.name;
-        userUsername.textContent = `@${userData.username}`;
-        userBio.textContent = userData.bio;
-        postsCount.textContent = userData.postsCount;
-        followersCount.textContent = userData.followersCount;
-        followingCount.textContent = userData.followingCount;
-        updateFollowButton();
+    function renderUserProfile(user) {
+        userAvatar.src = user.avatar || './assets/placeholder.svg'; // Use placeholder if avatar is not provided
+        userAvatar.alt = `${user.names}'s avatar`;
+        userName.textContent = user.names;
+        userUsername.textContent = `@${user.username}`;
+        userBio.textContent = user.bio || 'No bio available'; // Default message if no bio
+        postsCount.textContent = user.posts.length; // Count posts from fetched data
+        followersCount.textContent = user.followers.length; // Count followers from fetched data
+        followingCount.textContent = user.following.length; // Count following from fetched data
+        updateFollowButton(user.followers); // Pass followers to update button state
     }
 
     // Render user posts
-    function renderUserPosts() {
+    function renderUserPosts(posts) {
         postsContainer.innerHTML = '';
-        userPosts.forEach(post => {
+        posts.forEach(post => {
             const postElement = createPostElement(post);
             postsContainer.appendChild(postElement);
         });
@@ -92,17 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update follow button
-    function updateFollowButton() {
-        followBtn.textContent = userData.isFollowing ? 'Following' : 'Follow';
-        followBtn.classList.toggle('following', userData.isFollowing);
+    function updateFollowButton(followers) {
+        const isFollowing = followers.some(follower => follower.username === localStorage.getItem('username')); // Check if logged-in user is in followers
+        followBtn.textContent = isFollowing ? 'Following' : 'Follow';
+        followBtn.classList.toggle('following', isFollowing);
     }
 
     // Handle follow button click
     followBtn.addEventListener('click', () => {
-        userData.isFollowing = !userData.isFollowing;
-        userData.followersCount += userData.isFollowing ? 1 : -1;
-        followersCount.textContent = userData.followersCount;
-        updateFollowButton();
+        const isFollowing = followBtn.textContent === 'Following';
+        const newFollowersCount = parseInt(followersCount.textContent) + (isFollowing ? -1 : 1);
+        followersCount.textContent = newFollowersCount; // Update followers count
+        followBtn.textContent = isFollowing ? 'Follow' : 'Following';
+        followBtn.classList.toggle('following', !isFollowing);
+        
+        // Optionally, you can make API call to update follow status here.
     });
 
     // Format timestamp
@@ -128,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize page
-    renderUserProfile();
-    renderUserPosts();
+    // Fetch user data when the page loads
+    fetchUserData();
 });

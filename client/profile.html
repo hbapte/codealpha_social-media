@@ -1,3 +1,4 @@
+<!-- client\profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +15,9 @@
             <h1>Social Media App</h1>
             <nav>
                 <a href="index.html" class="nav-link">Feeds</a>
+                <a href="users.html" class="nav-link">Users</a>
                 <a href="notifications.html" class="nav-link">Notifications</a>
-                <a href="profile.html" class="nav-link active">Profile</a>
+                <a href="profile.html" class="nav-link active">My Profile</a>
                 <a href="settings.html" class="nav-link">Settings</a>
             </nav>
         </header>
@@ -26,16 +28,7 @@
                 <div class="profile-info">
                     <h1 id="names"></h1>
                     <p id="username"></p>
-                    <div class="badges">
-                        <span class="badge" id="role-badge">
-                            <i data-lucide="user"></i>
-                            <span>Web Developer</span>
-                        </span>
-                        <span class="badge" id="verified-badge">
-                            <i data-lucide="mail"></i>
-                            <span>Verified</span>
-                        </span>
-                    </div>
+                   
                 </div>
                 <a href="/client/edit-profile.html" class="edit-profile-btn">Edit Profile</a>
             </header>
@@ -55,7 +48,7 @@
                         </div>
                         <div>
                             <h3>Joined</h3>
-                            <p id="joined-date">January 2023</p>
+                            <p id="joined-at"></p>
                         </div>
                     </div>
                 </div>
@@ -78,7 +71,11 @@
                         <h3 id="posts-count"></h3>
                         <p>Total Posts</p>
                     </div>
+                    <div id="posts" class="posts-container"> <!-- Ensure this ID matches in JS -->
+                        <!-- Posts will be dynamically added here -->
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>

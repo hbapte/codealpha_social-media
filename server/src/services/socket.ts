@@ -2,44 +2,39 @@
 import { Server } from 'socket.io';
 import http from 'http';
 
-let io: Server | null = null;  // Define io as null initially
-const userSocketMap: { [key: string]: string } = {}; // Map for tracking users and their sockets
+let io: Server | null = null;  
+const userSocketMap: { [key: string]: string } = {}; 
 
 export const initializeSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000", // Your frontend URL
+      origin: "http://127.0.0.1:5500", 
       methods: ["GET", "POST"],
-      credentials: true, // Allow credentials
+      credentials: true, 
     },
   });
 
   io.on('connection', (socket) => {
     console.info(`Socket connected: ${socket.id}`);
-
-    // Event for joining user to their own room
     socket.on('join', (userId: string) => {
       userSocketMap[socket.id] = userId;
-      socket.join(userId); // User joins a room for receiving personalized updates
+      socket.join(userId); 
       console.log(`User ${userId} joined room ${userId}`);
     });
 
-    // Event for sending notifications
     socket.on('sendNotification', ({ toUserId, notification }) => {
       console.log(`Sending notification to user ${toUserId}`);
-      io?.to(toUserId).emit('receiveNotification', notification); // Send notification to the targeted user
+      io?.to(toUserId).emit('receiveNotification', notification); 
     });
 
-    // Handle disconnection
     socket.on('disconnect', () => {
       console.info(`Socket disconnected: ${socket.id}`);
       const userId = userSocketMap[socket.id];
       if (userId) {
-        delete userSocketMap[socket.id]; // Remove user from the map
+        delete userSocketMap[socket.id]; 
       }
     });
   });
-
   return io;
 };
 

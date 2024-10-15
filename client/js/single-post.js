@@ -1,4 +1,18 @@
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+
 document.addEventListener('DOMContentLoaded', () => {
+    const token = getCookie('token'); 
+    if (!token) {
+      window.location.href = './login.html';
+      return; 
+    }
+    
     const postContainer = document.getElementById('post');
     const commentForm = document.getElementById('comment-form');
     const commentsList = document.getElementById('comments-list');

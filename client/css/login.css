@@ -48,7 +48,7 @@ label {
 
 input[type="email"],
 input[type="password"] {
-  width: 100%;
+  width: 96%;
   padding: 0.5rem;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
@@ -130,7 +130,7 @@ input[type="password"] {
 .message {
   text-align: center;
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin: .9rem 0;
 }
 
 .message.success {
